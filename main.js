@@ -1,44 +1,61 @@
 /*global define, brackets, $ */
 
-// See detailed docs in https://docs.phcode.dev/api/creating-extensions
-
-// A good place to look for code examples for extensions: https://github.com/phcode-dev/phoenix/tree/main/src/extensions/default
-
-// A simple extension that adds an entry in "file menu> hello world"
+// a phoenix code extension to show/hide the toolbar using the statusbar or using the menu item in   the view menu
 define(function (require, exports, module) {
     "use strict";
 
     // Brackets modules
     const AppInit = brackets.getModule("utils/AppInit"),
-        DefaultDialogs = brackets.getModule("widgets/DefaultDialogs"),
-        Dialogs = brackets.getModule("widgets/Dialogs"),
         CommandManager = brackets.getModule("command/CommandManager"),
-        Menus = brackets.getModule("command/Menus");
+        Commands = brackets.getModule("command/Commands"),
+        Menus = brackets.getModule("command/Menus"),
+        StatusBar = brackets.getModule("widgets/StatusBar");
 
-    // Function to run when the menu item is clicked
-    function handleHelloWorld() {
-        Dialogs.showModalDialog(
-            DefaultDialogs.DIALOG_ID_INFO,
-            "hello",
-            "world"
-        );
+    // command registration
+    const TOGGLE_TOOLBAR_ID = "toolbarToggle.toggle";
+    CommandManager.register("Hide Toolbar", TOGGLE_TOOLBAR_ID, toggleToolbar);
+
+    // Variable to track toolbar visibility state
+    let isToolbarVisible = true;
+    let statusItem; // reference to the status bar item
+
+    // Function to toggle the toolbar visibility
+    function toggleToolbar() {
+        if (isToolbarVisible) {
+            // Hide the toolbar
+            $("#main-toolbar").css("display", "none");
+            $(".main-view .content").css("right", "0px");
+            isToolbarVisible = false;
+
+            // Update command name to reflect the current state of the toolbar
+            CommandManager.get(TOGGLE_TOOLBAR_ID).setName("Show Toolbar");
+            // Update status bar item text
+            statusItem.text("Show Toolbar");
+        } else {
+            // Show the toolbar
+            $("#main-toolbar").css("display", "block");
+            $(".main-view .content").css("right", "");
+            isToolbarVisible = true;
+
+            // Update command name to reflect the current state of the toolbar
+            CommandManager.get(TOGGLE_TOOLBAR_ID).setName("Hide Toolbar");
+            // Update status bar item text
+            statusItem.text("Hide Toolbar");
+        }
     }
-    
-      // First, register a command - a UI-less object associating an id to a handler
-    var MY_COMMAND_ID = "helloworld.sayhello";   // package-style naming to avoid collisions
-    CommandManager.register("Hello World", MY_COMMAND_ID, handleHelloWorld);
 
-    // Then create a menu item bound to the command
-    // The label of the menu item is the name we gave the command (see above)
-    var menu = Menus.getMenu(Menus.AppMenuBar.FILE_MENU);
-    menu.addMenuItem(MY_COMMAND_ID);
-    
-    // We could also add a key binding at the same time:
-    //menu.addMenuItem(MY_COMMAND_ID, "Ctrl-Alt-W");
-    // (Note: "Ctrl" is automatically mapped to "Cmd" on Mac)
-    
-    // Initialize extension once shell is finished initializing.
+
     AppInit.appReady(function () {
-        console.log("hello world");
+        // add menu item inside the view menu
+        const viewMenu = Menus.getMenu(Menus.AppMenuBar.VIEW_MENU);
+        viewMenu.addMenuItem(TOGGLE_TOOLBAR_ID, "", Menus.AFTER, Commands.VIEW_HIDE_SIDEBAR);
+
+        // add an icon to status bar too
+        statusItem = $("<div id='toolbar-toggle-status-item' class='status-item clickable'>Hide Toolbar</div>").click(
+            toggleToolbar
+        );
+        StatusBar.addIndicator("toolbarToggle", statusItem, true);
+
+        console.log("Toolbar Toggle extension loaded");
     });
 });

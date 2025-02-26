@@ -1,17 +1,22 @@
 {
-    "title": "Name of the extension",
-    "name": "github-<owner>-<repo>",
-    "description": "A sample extension.",
+    "title": "Hide Toolbar",
+    "name": "github-Pluto-Hide Toolbar",
+    "description": "Extension to toggle toolbar visibility in Phoenix Code",
     "version": "0.0.1",
     "license": "MIT",
-    "author": "your name (https://github.com/<your github id>)",
-    "homepage": "<project web page url or this github repo url if no website available>",
+    "author": "Pluto https://github.com/devvaannsh",
+    "homepage": "https://github.com/devvaannsh/Hide-Toolbar",
     "engines": {
         "brackets": ">=2.0.0"
     },
-    "categories": "demo",
+    "categories": "editor",
     "keywords": [
-        "phcode", "extension", "demo"
+        "toolbar", "hide toolbar", "show toolbar", "toggle toolbar visibility",
+        "remove toolbar", "toggle UI", "UI customization", "toggle menu bar",
+        "show menu", "hide menu", "toggle sidebar", "toolbar button", "toggle interface",
+        "hide interface", "show interface", "minimal UI",
+        "Phoenix Code toolbar", "extension toolbar", "disable toolbar",
+        "enable toolbar", "toolbar visibility", "hide right side menu", "hide right side bar", "hide live preview bar", "hide extension bar"
     ],
     "files": [
         "main.js"
